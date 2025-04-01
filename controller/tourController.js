@@ -54,20 +54,34 @@ exports.createTour = async (req, res) => {
   }
 };
 
-exports.updateTourById = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: 'Update tour ',
-    },
-  });
+exports.updateTourById = async (req, res) => {
+  try {
+    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        tour,
+      },
+    });
+  } catch (err) {}
 };
 
-exports.deleteTourById = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: 'Update tour ',
-    },
-  });
+exports.deleteTourById = async (req, res) => {
+  try {
+    const tour = await Tour.findByIdAndRemove(req.params.id);
+
+    res.status(204).json({
+      status: 'success',
+      data: {},
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      massage: 'Data not found',
+    });
+  }
 };
