@@ -2,12 +2,31 @@ const Tour = require('./../models/tourModel');
 
 exports.getAllTours = async (req, res) => {
   try {
+    console.log(req.query);
+
     // Build Query
+    //1.A Filtering
     const queryObj = { ...req.query };
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach((el) => delete queryObj[el]);
 
-    const query = Tour.find(queryObj);
+    //1.B Advanced Filtering
+
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`); // <=> '$lt or $gt or $gte or $lte'
+
+    let query = Tour.find(JSON.parse(queryStr));
+
+    //2. Sorting
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ');
+      query = query.sort(sortBy);
+
+      // document of Mongoose
+      //Model.find().sort("price ratingsAverage")
+    } else {
+      query = query.sort('-createAt');
+    }
 
     // Execute Query
     const tours = await query;
