@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const { isLowercase } = require('validator');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
 // name , email , password , passwordConfirm , photo , role , active
 const userSchema = new mongoose.Schema({
@@ -32,6 +32,15 @@ const userSchema = new mongoose.Schema({
     },
   },
   photo: String,
+});
+
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    return next();
+  }
+  this.password = await bcrypt.hash(this.password, 12);
+  this.passwordConfirm = undefined; // remove passwordConfirm
+  next();
 });
 
 const User = mongoose.model('User', userSchema);
