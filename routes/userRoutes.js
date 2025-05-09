@@ -7,15 +7,18 @@ const {
   deleteUserById,
 } = require('../controller/userController');
 
-const { signup } = require('../controller/authController');
+const { protect } = require('../controller/authController');
+
+const { signup, login } = require('../controller/authController');
 
 const router = express.Router();
 
 // authentication
 router.post('/signup', signup);
+router.post('/login', login);
 
 // users
-router.route('/').get(getAllUsers).post(createUser);
+router.route('/').get(protect, getAllUsers).post(createUser);
 
 router
   .route('/:id')

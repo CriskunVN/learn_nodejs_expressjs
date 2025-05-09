@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'A user must have a password'],
     minlength: 8,
+    select: false, // do not show password in query results
   },
   passwordConfirm: {
     type: String,
@@ -31,6 +32,10 @@ const userSchema = new mongoose.Schema({
       message: 'Password are not the same!',
     },
   },
+  passwordChangeAt: {
+    type: Date,
+    default: Date.now(),
+  },
   photo: String,
 });
 
@@ -42,6 +47,24 @@ userSchema.pre('save', async function (next) {
   this.passwordConfirm = undefined; // remove passwordConfirm
   next();
 });
+
+userSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword,
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
+
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangeAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangeAt.getTime() / 1000,
+      10,
+    );
+    return JWTTimestamp < changedTimestamp; // false means NOT changed
+  }
+  return false;
+};
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;
