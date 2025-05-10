@@ -7,7 +7,7 @@ const {
   deleteUserById,
 } = require('../controller/userController');
 
-const { protect } = require('../controller/authController');
+const authController = require('../controller/authController');
 
 const { signup, login } = require('../controller/authController');
 
@@ -18,7 +18,7 @@ router.post('/signup', signup);
 router.post('/login', login);
 
 // users
-router.route('/').get(protect, getAllUsers).post(createUser);
+router.route('/').get(authController.protect, getAllUsers).post(createUser);
 
 router
   .route('/:id')
