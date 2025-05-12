@@ -56,6 +56,15 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) {
+    return next();
+  }
+  this.passwordChangeAt = Date.now() - 1000; // to make sure the passwordChangeAt is before the token issued at
+  next();
+});
+
+// check password login with hashed password in the database
 userSchema.methods.correctPassword = async function (
   candidatePassword,
   userPassword,
@@ -63,6 +72,7 @@ userSchema.methods.correctPassword = async function (
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 
+// check if the password is changed after the token was issued
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   if (this.passwordChangeAt) {
     const changedTimestamp = parseInt(
@@ -74,15 +84,17 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   return false;
 };
 
+// create password reset token
 userSchema.methods.createPasswordResetToken = function () {
+  // create random token
   const resetToken = crypto.randomBytes(32).toString('hex');
   this.passwordResetToken = crypto
     .createHash('sha256')
     .update(resetToken)
     .digest('hex');
+  // set expire time for the token
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
 
-  console.log({ resetToken }, this.passwordResetToken);
   return resetToken;
 };
 
