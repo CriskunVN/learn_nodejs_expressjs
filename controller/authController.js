@@ -22,15 +22,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   });
 
   // Generate JWT token
-  const token = signToken(newUser._id);
-
-  res.status(201).json({
-    status: 'success',
-    token,
-    data: {
-      user: newUser,
-    },
-  });
+  createSendToken(newUser, 201, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -47,11 +39,7 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // send token to client
-  const token = signToken(user._id);
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  createSendToken(user, 200, res);
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -176,9 +164,27 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   // This is done in the userModel pre save hook
 
   // 4. Log the user in, send JWT
+  createSendToken(user, 200, res);
+});
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.user.id).select('+password');
+  // 1. Check if POSTed password is correct
+  if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
+    return next(new AppError('Your current password is wrong.', 401));
+  }
+  // 2. If so, update password
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  await user.save();
+  // 3. Log user in, send JWT
+  createSendToken(user, 200, res);
+});
+
+const createSendToken = (user, statusCode, res) => {
   const token = signToken(user._id);
-  res.status(200).json({
+  res.status(statusCode).json({
     status: 'success',
     token,
   });
-});
+};

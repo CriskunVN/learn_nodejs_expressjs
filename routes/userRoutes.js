@@ -24,6 +24,12 @@ router.post('/login', login);
 router.post('/forgotPassword', forgotPassword);
 router.patch('/resetPassword/:token', resetPassword);
 
+router.patch(
+  '/updateMyPassword',
+  authController.protect,
+  authController.updatePassword,
+);
+
 // users
 router.route('/').get(authController.protect, getAllUsers).post(createUser);
 
