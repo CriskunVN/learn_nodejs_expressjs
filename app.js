@@ -5,14 +5,16 @@ const GlobalErrorHandler = require('./controller/errorController');
 const AppError = require('./utils/appError');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
-const helmelt = require('helmet');
+const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
 
 const app = express();
 
 // 1. GLOBAL MIDDLEWARE
 
 // Set security HTTP headers
-app.use(helmelt());
+app.use(helmet());
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
@@ -29,6 +31,12 @@ app.use('/api', limiter);
 
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
+
+// Data Sanitization against NoSQL query injection
+app.use(mongoSanitize());
+
+// Data Sanitization against XSS
+app.use(xss());
 
 // Serving static files
 app.use(express.static(`${__dirname}/public`));
