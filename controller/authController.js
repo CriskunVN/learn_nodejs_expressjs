@@ -6,12 +6,14 @@ const jwt = require('jsonwebtoken');
 const sendEmail = require('../utils/email');
 const crypto = require('crypto');
 
+// this function is used to sign the token
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
 
+// This function is used to create a new user
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -25,6 +27,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   createSendToken(newUser, 201, res);
 });
 
+// This function is used to login the user
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
   // Check if email and password exist
@@ -42,6 +45,8 @@ exports.login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
+// This function is used to protect the routes
+// It is called in the routes that need to be protected
 exports.protect = catchAsync(async (req, res, next) => {
   // 1. Getting token and check of it's there
   let token;
@@ -82,6 +87,8 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
+// This function is used to restrict the routes to certain roles
+// It is called in the routes that need to be restricted
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
     // roles ['admin', 'lead-guide']. if role='user' no have permission
@@ -94,6 +101,8 @@ exports.restrictTo = (...roles) => {
   };
 };
 
+// This function is used to send the password reset token to the user's email
+// It is called when the user clicks on the forgot password link
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   // 1. Get user based on POSTed email
   const user = await User.findOne({ email: req.body.email });
@@ -134,6 +143,8 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   }
 });
 
+// This function is used to reset the password
+// It is called when the user clicks on the link in the email
 exports.resetPassword = catchAsync(async (req, res, next) => {
   // 1. Get user based on the token
   // Hash the token from the URL to get the hashed token
@@ -167,6 +178,8 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
+// This function is used to update the password
+// It is called when the user is logged in and wants to change their password
 exports.updatePassword = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.user.id).select('+password');
   // 1. Check if POSTed password is correct
@@ -181,6 +194,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
+// This function is used to create and send the JWT token
 const createSendToken = (user, statusCode, res) => {
   const token = signToken(user._id);
   // create cookie
