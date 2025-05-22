@@ -10,6 +10,7 @@ const filterObj = (obj, ...allowedFields) => {
   return newObj;
 };
 
+// function to create a new user
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   const users = await User.find();
 
@@ -22,6 +23,7 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
   });
 });
 
+// function to get a user by id
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1) Create error if user POSTs password data
   if (req.body.password || req.body.passwordConfirm) {
@@ -49,6 +51,8 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
+// function to delete a user
+// This will not delete the user from the database but will set the active field to false
 exports.deleteMe = catchAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user.id, { active: false });
   res.status(204).json({
@@ -57,6 +61,7 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
+// function to create a new user
 exports.createUser = (req, res) => {
   res.status(500).json({
     status: 'error',
@@ -64,6 +69,7 @@ exports.createUser = (req, res) => {
   });
 };
 
+// function to get a user by id
 exports.getUserById = (req, res) => {
   res.status(500).json({
     status: 'error',
@@ -71,6 +77,7 @@ exports.getUserById = (req, res) => {
   });
 };
 
+// function to update a user by id
 exports.updateUserById = (req, res) => {
   res.status(500).json({
     status: 'error',
@@ -78,6 +85,7 @@ exports.updateUserById = (req, res) => {
   });
 };
 
+// function to delete a user by id
 exports.deleteUserById = (req, res) => {
   res.status(500).json({
     status: 'error',
