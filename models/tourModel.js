@@ -6,8 +6,8 @@ const tourSchema = new mongoose.Schema(
     name: {
       type: String,
       required: [true, 'A tour must have a name'],
-      unique: true,
-      trim: true,
+      unique: true, // this will make sure that the name is unique
+      trim: true, // this will remove the spaces from the start and end of the string
       minlength: [10, 'A tour name must have more or equal then 10 characters'],
       maxlength: [40, 'A tour name must have less or equal then 40 characters'],
       // validate: [validator.isAlpha, 'Errooo looix con me no roi'],
@@ -79,8 +79,8 @@ const tourSchema = new mongoose.Schema(
     },
   },
   {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
+    toJSON: { virtuals: true }, // this will make sure that the virtuals are included in the JSON output
+    toObject: { virtuals: true }, // this will make sure that the virtuals are included in the object output
   },
 );
 tourSchema.virtual('durationWeeks').get(function () {
@@ -104,7 +104,7 @@ tourSchema.pre(/^find/, function (next) {
 
 tourSchema.post(/^find/, function (docs, next) {
   console.log(`Query took ${Date.now() - this.start} milliseconds`);
-  
+
   next();
 });
 

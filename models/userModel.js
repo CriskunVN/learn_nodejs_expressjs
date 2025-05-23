@@ -52,6 +52,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+// document middleware: runs before .save() and .create()
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
@@ -61,6 +62,7 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+// instance method to check if the password is changed after the token was issued
 userSchema.pre('save', function (next) {
   if (!this.isModified('password') || this.isNew) {
     return next();
@@ -69,6 +71,7 @@ userSchema.pre('save', function (next) {
   next();
 });
 
+// query middleware: runs before .find() and .findOne()
 userSchema.pre(/^find/, function (next) {
   // this points to the current query
   this.find({ active: { $ne: false } }); // exclude all inactive users
