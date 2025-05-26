@@ -1,3 +1,4 @@
+// this class is used to build query features for Mongoose
 class APIFeatures {
   constructor(query, queryString) {
     this.query = query;

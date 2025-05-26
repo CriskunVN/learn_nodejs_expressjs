@@ -1,6 +1,8 @@
 const nodemailer = require('nodemailer');
 const catchAsync = require('./catchAsync');
 
+// This function sends an email using nodemailer
+// It takes an option object with email, subject, and message properties
 const sendEmail = catchAsync(async (option) => {
   // 1) Create a transporter
   const transporter = nodemailer.createTransport({
