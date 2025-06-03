@@ -3,6 +3,7 @@ const slugify = require('slugify');
 const validator = require('validator');
 const tourSchema = new mongoose.Schema(
   {
+    //the name of the tour
     name: {
       type: String,
       required: [true, 'A tour must have a name'],
@@ -12,15 +13,20 @@ const tourSchema = new mongoose.Schema(
       maxlength: [40, 'A tour name must have less or equal then 40 characters'],
       // validate: [validator.isAlpha, 'Errooo looix con me no roi'],
     },
+    // this will be used to create a slug from the name
     slug: String,
+
+    // duration of the tour in days
     duration: {
       type: Number,
       required: [true, 'A tour must have a duration'],
     },
+    // maximum group size
     maxGroupSize: {
       type: Number,
       required: [true, 'A tour must have a group size'],
     },
+    // difficulty of the tour
     difficulty: {
       type: String,
       required: [true, 'A tour must have a group size'],
@@ -29,21 +35,24 @@ const tourSchema = new mongoose.Schema(
         message: 'Difficulty is either: easy , medium , difficult',
       },
     },
-
+    // ratings of the tour
     ratingsAverage: {
       type: Number,
       default: 4.5,
       min: [1, 'A rating must be above 1.0'],
       max: [5, 'A rating must be below 5.0'],
     },
+    // number of ratings
     ratingsQuantity: {
       type: Number,
       default: 0,
     },
+    // price of the tour
     price: {
       type: Number,
       required: [true, 'A tour must have a price'],
     },
+    // price discount of the tour
     priceDiscount: {
       type: Number,
       validate: {

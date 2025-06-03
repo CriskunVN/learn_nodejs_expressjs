@@ -5,10 +5,12 @@ const crypto = require('crypto');
 
 // name , email , password , passwordConfirm , photo , role , active
 const userSchema = new mongoose.Schema({
+  // the name of the user
   name: {
     type: String,
     required: [true, 'A user must have a name'],
   },
+  // the email of the user
   email: {
     type: String,
     required: [true, 'A user must have a email'],
@@ -16,12 +18,14 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, 'Please provide a valid email'],
   },
+  // the password of the user
   password: {
     type: String,
     required: [true, 'A user must have a password'],
     minlength: 8,
     select: false, // do not show password in query results
   },
+  // the password confirm of the user
   passwordConfirm: {
     type: String,
     required: [true, 'A user must have a passwordConfirm'],
@@ -33,6 +37,7 @@ const userSchema = new mongoose.Schema({
       message: 'Password are not the same!',
     },
   },
+  // the password change date of the user
   passwordChangeAt: {
     type: Date,
     default: Date.now(),
@@ -43,7 +48,9 @@ const userSchema = new mongoose.Schema({
     enum: ['user', 'guide', 'lead-guide', 'admin'],
     default: 'user',
   },
+  // the password reset token of the user
   passwordResetToken: String,
+  // the password reset expires date of the user
   passwordResetExpires: Date,
   active: {
     type: Boolean,
