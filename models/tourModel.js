@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
+const User = require('./userModel'); // Assuming you have a user model
 const tourSchema = new mongoose.Schema(
   {
     //the name of the tour
@@ -115,6 +116,7 @@ const tourSchema = new mongoose.Schema(
         day: Number,
       },
     ],
+    guides: Array,
   },
   // this is virtuals options
   {
@@ -134,10 +136,15 @@ tourSchema.pre('save', function (next) {
 
 //QUERY MIDDLEWARE:
 
-// tourSchema.pre('find', function (next) {
 tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
   this.start = Date.now();
+  next();
+});
+
+tourSchema.pre('save', async function (next) {
+  const guidesPromises = this.guides.map(async (id) => await User.findById(id));
+  this.guides = await Promise.all(guidesPromises);
   next();
 });
 
