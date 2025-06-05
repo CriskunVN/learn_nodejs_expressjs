@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
-const User = require('./userModel'); // Assuming you have a user model
+// const User = require('./userModel'); // Assuming you have a user model
 const tourSchema = new mongoose.Schema(
   {
     //the name of the tour
@@ -144,6 +144,14 @@ tourSchema.pre('save', function (next) {
 tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
   this.start = Date.now();
+  next();
+});
+
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt ',
+  });
   next();
 });
 
