@@ -129,8 +129,16 @@ const tourSchema = new mongoose.Schema(
     toObject: { virtuals: true }, // this will make sure that the virtuals are included in the object output
   },
 );
+
+// VIRTUAL PROPERTIES : this will not be saved in the database
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
+});
+
+tourSchema.virtual('reviews', {
+  ref: 'Review', // this will reference the Review model
+  foreignField: 'tour', // this is the field in the Review model that references the Tour model
+  localField: '_id', // this is the field in the Tour model that references the Review model
 });
 
 //DOCUMENT MIDDLEWARE : runs before .save and .create MONGOOSE
