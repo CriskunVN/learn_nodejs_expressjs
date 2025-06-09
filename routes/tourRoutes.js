@@ -10,9 +10,14 @@ const {
   getMonthlyPlan,
 } = require('../controller/tourController');
 const authController = require('../controller/authController');
-const reviewController = require('../controller/reviewController');
+const reviewRoutes = require('../routes/reviewRoutes');
 //Router
 const router = express.Router();
+
+// Nested Routes for Reviews
+// POST tour/:id/reviews
+// GET tour/:id/reviews
+router.use('/:tourId/reviews', reviewRoutes); // Mounting the review routes on the tour routes
 
 router.route('/tour-stats').get(getTourStats); // route for get tour stats
 
@@ -28,17 +33,4 @@ router.route('/:id').get(getTourById).patch(updateTourById).delete(
   deleteTourById,
 ); // route for get tour by id, update tour by id and delete tour by id
 
-// Nested Routes for Reviews
-// POST tour/:id/reviews
-// GET tour/:id/reviews
-// GET tour/:id/reviews/:reviewId
-router
-  .route('/:id/reviews')
-  .get(reviewController.getAllReviews)
-  .post(
-    authController.protect,
-    authController.restrictTo('user'),
-    reviewController.createReview,
-  ); // route for get all reviews and create review
-router.route('/:id/reviews/:reviewId').get(reviewController.getReviewById);
 module.exports = router;
