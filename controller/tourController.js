@@ -2,6 +2,7 @@ const Tour = require('./../models/tourModel');
 const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
+const factory = require('./handlerFactory');
 
 // this function is used to filter the tours based on the query parameters
 exports.aliasTopTours = (req, res, next) => {
@@ -81,18 +82,7 @@ exports.updateTourById = catchAsync(async (req, res, next) => {
 
 // This function is used to delete a tour by id
 // This will not delete the tour from the database but will set the active field to false
-exports.deleteTourById = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndRemove(req.params.id);
-
-  if (!tour) {
-    return next(new AppError('No tour found with that ID', 404));
-  }
-
-  res.status(204).json({
-    status: 'success',
-    data: {},
-  });
-});
+exports.deleteTourById = factory.deleteOne(Tour);
 
 // This function is used to get tour stats
 // It will return the number of tours, number of ratings, average rating, average price, minimum price, maximum price

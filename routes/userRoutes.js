@@ -4,7 +4,7 @@ const {
   createUser,
   getUserById,
   updateUserById,
-  deleteUserById,
+  deleteUser,
   updateMe,
   deleteMe,
 } = require('../controller/userController');
@@ -35,6 +35,10 @@ router
   .route('/:id')
   .get(getUserById)
   .patch(updateUserById)
-  .delete(deleteUserById);
+  .delete(
+    authController.protect,
+    authController.restrictTo('admin'),
+    deleteUser,
+  );
 
 module.exports = router;
