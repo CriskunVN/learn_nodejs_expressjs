@@ -135,6 +135,7 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
+// VIRTUAL POPULATE : this will populate the reviews for the tour
 tourSchema.virtual('reviews', {
   ref: 'Review', // this will reference the Review model
   foreignField: 'tour', // this is the field in the Review model that references the Tour model

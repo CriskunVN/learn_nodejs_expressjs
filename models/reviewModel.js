@@ -20,11 +20,13 @@ const reviewSchema = new mongoose.Schema(
       type: Date,
       default: Date.now(),
     },
+    // Reference to the tour being reviewed
     tour: {
       type: mongoose.Schema.ObjectId,
       ref: 'Tour',
       required: [true, 'Review must belong to a tour'],
     },
+    // Reference to the user who wrote the review
     user: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
@@ -37,6 +39,7 @@ const reviewSchema = new mongoose.Schema(
   },
 );
 
+// middle pre hook to prevent duplicate reviews for the same user and tour
 reviewSchema.pre(/^find/, function (next) {
   //   this.populate([
   //     { path: 'user', select: 'name photo' },

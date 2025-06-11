@@ -3,8 +3,10 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const factory = require('./handlerFactory');
 
+// This controller being used when route is nested under a tour route /tour/:tourId/reviews
 exports.getAllReviews = catchAsync(async (req, res, next) => {
   let filter = {};
+  // If the request is coming from a tour, we want to filter reviews by that tour
   if (req.params.tourId) {
     filter = { tour: req.params.tourId };
   }
@@ -19,6 +21,7 @@ exports.getAllReviews = catchAsync(async (req, res, next) => {
   });
 });
 
+// This controller being used when route is nested under a tour route /tour/:tourId/reviews/:id
 exports.getReviewById = catchAsync(async (req, res, next) => {
   const review = await Review.findById(req.params.id);
 
@@ -49,4 +52,5 @@ exports.createReview = catchAsync(async (req, res, next) => {
   });
 });
 
+// Using factory functions for delete operations
 exports.deleteReview = factory.deleteOne(Review);
