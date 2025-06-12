@@ -5,18 +5,21 @@ const router = express.Router({
   mergeParams: true, // This allows us to access params from parent routes
 });
 
-router
-  .route('/')
-  .get(reviewController.getAllReviews)
-  .post(
-    authController.protect,
-    authController.restrictTo('user'),
-    reviewController.createReview,
-  );
+router.route('/').get(reviewController.getAllReviews).post(
+  authController.protect,
+  authController.restrictTo('user'),
+  reviewController.setTourUserIds, // Middleware to set tour and user IDs
+  reviewController.createReview,
+);
 
 router
   .route('/:id')
   .get(reviewController.getReviewById)
-  .delete(reviewController.deleteReview);
+  .delete(reviewController.deleteReview)
+  .patch(
+    authController.protect,
+    authController.restrictTo('user', 'admin'),
+    reviewController.updateReview,
+  );
 
 module.exports = router;

@@ -3,7 +3,7 @@ const {
   getAllUsers,
   createUser,
   getUserById,
-  updateUserById,
+  updateUser,
   deleteUser,
   updateMe,
   deleteMe,
@@ -34,7 +34,7 @@ router.route('/').get(authController.protect, getAllUsers).post(createUser); // 
 router
   .route('/:id')
   .get(getUserById)
-  .patch(updateUserById)
+  .patch(updateUser)
   .delete(
     authController.protect,
     authController.restrictTo('admin'),

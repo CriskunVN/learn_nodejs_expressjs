@@ -63,12 +63,7 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 });
 
 // function to create a new user
-exports.createUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined!',
-  });
-};
+exports.createUser = factory.createOne(User);
 
 // function to get a user by id
 exports.getUserById = catchAsync(async (req, res) => {
@@ -89,12 +84,7 @@ exports.getUserById = catchAsync(async (req, res) => {
 });
 
 // function to update a user by id
-exports.updateUserById = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined!',
-  });
-};
+exports.updateUser = factory.updateOne(User);
 
 // function to delete a user by id
 exports.deleteUser = factory.deleteOne(User);

@@ -49,39 +49,13 @@ exports.getTourById = catchAsync(async (req, res, next) => {
   });
 });
 
-// This function is used to create a new tour
-exports.createTour = catchAsync(async (req, res, next) => {
-  const newTour = await Tour.create(req.body);
+// This function is used to create a new tour by using the factory function
+exports.createTour = factory.createOne(Tour);
 
-  res.status(201).json({
-    status: 'success',
-    data: {
-      tour: newTour,
-    },
-  });
-});
+// This function is used to update a tour by id by using the factory function
+exports.updateTourById = factory.updateOne(Tour);
 
-// This function is used to update a tour by id
-exports.updateTourById = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-
-  if (!tour) {
-    return next(new AppError('No tour found with that ID', 404));
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
-});
-
-// This function is used to delete a tour by id
-// This will not delete the tour from the database but will set the active field to false
+// This function is used to delete a tour by id by using the factory function
 exports.deleteTourById = factory.deleteOne(Tour);
 
 // This function is used to get tour stats
