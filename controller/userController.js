@@ -11,19 +11,6 @@ const filterObj = (obj, ...allowedFields) => {
   return newObj;
 };
 
-// function to create a new user
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
-
-  res.status(200).json({
-    status: 'success',
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
-
 // function to get a user by id
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1) Create error if user POSTs password data
@@ -62,26 +49,14 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
+// function to get all users
+exports.getAllUsers = factory.getAll(User);
+
 // function to create a new user
 exports.createUser = factory.createOne(User);
 
 // function to get a user by id
-exports.getUserById = catchAsync(async (req, res) => {
-  const id = req.params.id;
-  const user = await User.findById(id);
-  if (!user) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'No user found with that ID',
-    });
-  }
-  res.status(200).json({
-    status: 'success',
-    data: {
-      user,
-    },
-  });
-});
+exports.getUserById = factory.getOne(User);
 
 // function to update a user by id
 exports.updateUser = factory.updateOne(User);

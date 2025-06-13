@@ -39,7 +39,7 @@ const reviewSchema = new mongoose.Schema(
   },
 );
 
-// middle pre hook to prevent duplicate reviews for the same user and tour
+// middle pre hook to prevent duplicate reviews for the same user
 reviewSchema.pre(/^find/, function (next) {
   //   this.populate([
   //     { path: 'user', select: 'name photo' },

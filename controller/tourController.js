@@ -1,5 +1,4 @@
 const Tour = require('./../models/tourModel');
-const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const factory = require('./handlerFactory');
@@ -13,41 +12,10 @@ exports.aliasTopTours = (req, res, next) => {
 };
 
 // This function is used to get all tours
-exports.getAllTours = catchAsync(async (req, res, next) => {
-  // Execute Query
+exports.getAllTours = factory.getAll(Tour);
 
-  const features = new APIFeatures(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields();
-  // .pagination();
-  const tours = await features.query;
-
-  // Send response to client
-  res.status(200).json({
-    status: 'success',
-    result: tours.length,
-    data: {
-      tours: tours,
-    },
-  });
-});
-
-// This function is used to get a tour by id
-exports.getTourById = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.id).populate('reviews');
-
-  if (!tour) {
-    return next(new AppError('No tour found with that ID', 404));
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: tour,
-    },
-  });
-});
+// This function is used to get a tour by id by using the factory function
+exports.getTourById = factory.getOne(Tour, { path: 'reviews' });
 
 // This function is used to create a new tour by using the factory function
 exports.createTour = factory.createOne(Tour);
@@ -59,7 +27,6 @@ exports.updateTourById = factory.updateOne(Tour);
 exports.deleteTourById = factory.deleteOne(Tour);
 
 // This function is used to get tour stats
-// It will return the number of tours, number of ratings, average rating, average price, minimum price, maximum price
 exports.getTourStats = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([
     {
