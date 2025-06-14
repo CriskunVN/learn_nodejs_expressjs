@@ -11,6 +11,11 @@ const filterObj = (obj, ...allowedFields) => {
   return newObj;
 };
 
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id; // to get the user id from the token
+  next();
+};
+
 // function to get a user by id
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1) Create error if user POSTs password data
@@ -56,7 +61,7 @@ exports.getAllUsers = factory.getAll(User);
 exports.createUser = factory.createOne(User);
 
 // function to get a user by id
-exports.getUserById = factory.getOne(User);
+exports.getUser = factory.getOne(User);
 
 // function to update a user by id
 exports.updateUser = factory.updateOne(User);
