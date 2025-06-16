@@ -11,35 +11,27 @@ router.post('/login', authController.login); // route for login
 router.post('/forgotPassword', authController.forgotPassword); // route for forgot password
 router.patch('/resetPassword/:token', authController.resetPassword); // route for reset password
 
-router.patch(
-  '/updateMyPassword',
-  authController.protect,
-  authController.updatePassword,
-); // route for update password
+// authentication middleware
+router.use(authController.protect); // protect all routes after this middleware
 
-router.get(
-  '/me',
-  authController.protect,
-  userController.getMe,
-  userController.getUser,
-); // route for get current user
-router.patch('/updateMe', authController.protect, userController.updateMe); // route for update user data
-router.delete('/deleteMe', authController.protect, userController.deleteMe); // route for delete user
+router.patch('/updateMyPassword', authController.updatePassword); // route for update password
 
+router.get('/me', userController.getMe, userController.getUser); // route for get current user
+router.patch('/updateMe', userController.updateMe); // route for update user data
+router.delete('/deleteMe', userController.deleteMe); // route for delete user
+
+// restrict to admin for the following routes
+router.use(authController.restrictTo('admin')); // restrict to admin for all routes after this middleware
 // users
 router
   .route('/')
-  .get(authController.protect, userController.getAllUsers)
+  .get(userController.getAllUsers)
   .post(userController.createUser); // route for get all users and create user
 
 router
   .route('/:id')
   .get(userController.getUser)
   .patch(userController.updateUser)
-  .delete(
-    authController.protect,
-    authController.restrictTo('admin'),
-    userController.deleteUser,
-  );
+  .delete(authController.restrictTo('admin'), userController.deleteUser);
 
 module.exports = router;

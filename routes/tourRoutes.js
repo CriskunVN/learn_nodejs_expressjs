@@ -21,11 +21,24 @@ router.use('/:tourId/reviews', reviewRoutes); // Mounting the review routes on t
 
 router.route('/tour-stats').get(getTourStats); // route for get tour stats
 
-router.route('/monthly-plan/:year').get(getMonthlyPlan); // route for get monthly plan
+router
+  .route('/monthly-plan/:year')
+  .get(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide', 'guide'),
+    getMonthlyPlan,
+  ); // route for get monthly plan
 
 router.route('/top-5-cheap').get(aliasTopTours, getAllTours); // route for get top 5 cheap tours
 
-router.route('/').get(getAllTours).post(createTour); // route for get all tours and create tour
+router
+  .route('/')
+  .get(getAllTours)
+  .post(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    createTour,
+  ); // route for get all tours and create tour
 
 router.route('/:id').get(getTourById).patch(updateTourById).delete(
   authController.protect,

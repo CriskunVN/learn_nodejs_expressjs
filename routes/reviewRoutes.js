@@ -12,12 +12,16 @@ router.route('/').get(reviewController.getAllReviews).post(
   reviewController.createReview,
 );
 
+router.use(authController.protect); // Protect all routes after this middleware
+
 router
   .route('/:id')
   .get(reviewController.getReview)
-  .delete(reviewController.deleteReview)
+  .delete(
+    authController.restrictTo('user', 'admin'),
+    reviewController.deleteReview,
+  )
   .patch(
-    authController.protect,
     authController.restrictTo('user', 'admin'),
     reviewController.updateReview,
   );
