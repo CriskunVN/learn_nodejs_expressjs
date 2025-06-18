@@ -68,15 +68,35 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
     },
   ]);
 
-  await Tour.findByIdAndUpdate(tourId, {
-    ratingsQuantity: stats[0].nRating,
-    ratingsAverage: stats[0].avgRating,
-  });
+  if (stats.length > 0) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: stats[0].nRating,
+      ratingsAverage: stats[0].avgRating,
+    });
+  } else {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0, // default value if no reviews exist
+      ratingsAverage: 4.5, // default value if no reviews exist
+    });
+  }
 };
 
 reviewSchema.post('save', function () {
   // this points to the current review
   this.constructor.calcAverageRatings(this.tour);
+});
+
+// findOneAndUpdate and findOneAndDelete are not affected by the post save hook
+// so we need to use pre and post hooks for them
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+  this.r = await this.findOne(); // this will store the current review
+  console.log(this.r);
+  next();
+});
+
+reviewSchema.post(/^findOneAnd/, async function () {
+  // this points to the current review
+  await this.r.constructor.calcAverageRatings(this.r.tour);
 });
 
 const Review = mongoose.model('Review', reviewSchema);
