@@ -54,6 +54,7 @@ reviewSchema.pre('save', function (next) {
   next();
 });
 
+// middleware to prevent a user from reviewing the same tour multiple times
 reviewSchema.statics.calcAverageRatings = async function (tourId) {
   const stats = await this.aggregate([
     {
