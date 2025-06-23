@@ -12,6 +12,11 @@ const handleDuplicateFieldsDB = (err) => {
   return new AppError(message, 400);
 };
 
+const handleDuplicateReviews = () => {
+  const message = `You have already reviewed this tour. Please update your review instead of creating a new one!`;
+  return new AppError(message, 400);
+};
+
 // This function is used to handle the validation error
 const handleValidationErrorDB = (err) => {
   const value = Object.values(err.errors)
@@ -74,6 +79,9 @@ module.exports = (err, req, res, next) => {
     if (err.name === 'ValidationError') error = handleValidationErrorDB(error);
     if (err.name === 'JsonWebTokenError') error = handleJWTError();
     if (err.name === 'TokenExpiredError') error = handleJWTExpiredError();
+    if (err.code === 11001 && err.name === 'MongoError') {
+      error = handleDuplicateReviews(error);
+    }
 
     sendErrorProd(error, res);
   }

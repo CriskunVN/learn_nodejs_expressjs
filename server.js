@@ -18,14 +18,9 @@ const DB = process.env.DATABASE.replace(
   '<PASSWORD>',
   process.env.DATABASE_PASSWORD,
 ); // Replace <PASSWORD> with your actual database password
-
 // Connect to MongoDB using Mongoose
 mongoose
-  .connect(DB, {
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useNewUrlParser: true,
-  })
+  .connect(DB, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('DB connection successful!'));
 
 const port = process.env.PORT;

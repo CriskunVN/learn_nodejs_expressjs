@@ -39,6 +39,8 @@ const reviewSchema = new mongoose.Schema(
   },
 );
 
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true }); // this will prevent a user from reviewing the same tour multiple times
+
 // middle pre hook to prevent duplicate reviews for the same user
 reviewSchema.pre(/^find/, function (next) {
   //   this.populate([
