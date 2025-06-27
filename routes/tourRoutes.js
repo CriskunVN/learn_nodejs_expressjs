@@ -8,9 +8,11 @@ const {
   deleteTourById,
   getTourStats,
   getMonthlyPlan,
+  getToursWithin,
 } = require('../controller/tourController');
 const authController = require('../controller/authController');
 const reviewRoutes = require('../routes/reviewRoutes');
+const Tour = require('../models/tourModel');
 //Router
 const router = express.Router();
 
@@ -30,6 +32,10 @@ router
   ); // route for get monthly plan
 
 router.route('/top-5-cheap').get(aliasTopTours, getAllTours); // route for get top 5 cheap tours
+
+router
+  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(getToursWithin); // route for get tours within a certain distance from a point
 
 router
   .route('/')

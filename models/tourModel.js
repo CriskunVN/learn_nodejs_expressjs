@@ -133,6 +133,7 @@ const tourSchema = new mongoose.Schema(
 
 tourSchema.index({ price: 1, ratingsAverage: -1 }); // this will create an index on the price and ratingsAverage fields
 tourSchema.index({ slug: 1 }); // this will create an index on the slug field
+tourSchema.index({ startLocation: '2dsphere' }); // this will create a 2dsphere index on the startLocation field
 
 // VIRTUAL PROPERTIES : this will not be saved in the database
 tourSchema.virtual('durationWeeks').get(function () {
