@@ -67,4 +67,5 @@ exports.getUser = factory.getOne(User);
 exports.updateUser = factory.updateOne(User);
 
 // function to delete a user by id
+// Comment
 exports.deleteUser = factory.deleteOne(User);
