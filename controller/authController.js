@@ -49,6 +49,7 @@ exports.login = catchAsync(async (req, res, next) => {
 // It is called in the routes that need to be protected
 exports.protect = catchAsync(async (req, res, next) => {
   // 1. Getting token and check of it's there
+  // Token
   let token;
   if (
     req.headers.authorization &&
